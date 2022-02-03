@@ -6,6 +6,8 @@ on:
       - opened
       - reopened
       - edited
+  workflow_dispatch:
+    
 
 jobs:
   get-info:
@@ -14,4 +16,5 @@ jobs:
       - name: print issue body
         run: |
           echo "${{ github.event.issue.body }}"
+          echo "${{ github.event.issue }}"
           
