@@ -12,7 +12,7 @@ on:
 jobs:
   get-info:
     runs-on: ubuntu-latest
-    if: ${{ github.event.issue.types.reopened }}
+    if: ${{ github.event.issue.state }} == 'reopened'
     steps:
       - name: print issue body
         run: |
