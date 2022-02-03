@@ -1,4 +1,4 @@
-name: CI
+name: issue testing
 
 on:
   issues:
@@ -12,6 +12,7 @@ on:
 jobs:
   get-info:
     runs-on: ubuntu-latest
+    if: ${{ github.event.issue }}
     steps:
       - name: print issue body
         run: |
