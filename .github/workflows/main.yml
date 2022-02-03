@@ -1,0 +1,16 @@
+name: CI
+
+on:
+  issues:
+    types:
+      - opened
+      - reopened
+
+jobs:
+  get-info:
+    runs-on: ubuntu-latest
+    steps:
+      - name: print issue body
+        run: |
+          echo "${{ github.event.issue.body }}"
+          
