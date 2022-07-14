@@ -5,8 +5,19 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    env:
+      repository: "${{github.repository}}"
+    
     steps:
+      - name: check if project exists
+        uses: octokit/request-action@v2.1.6
+        id: get_repository_validation_request_project
+        with:
+          route: GET /repos/{repo}/projects
+          repo: ${{env.repository}}
+      
+      - run: echo '${{ steps.get_repository_validation_request_project.outputs.data }}'
+          
       - uses: octokit/request-action@v2.1.6
         id: get_latest_release
         with:
