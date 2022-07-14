@@ -16,15 +16,19 @@ jobs:
         with:
           route: GET /repos/{repo}/projects
           repo: ${{env.repository}}
-          conclusion: "success"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: check if project already exists
-        run: echo '${{ steps.get_repository_projects.outputs.data }}' | jq -e '.[] | select(.name=="${{env.project-name}}" and .state=="open")'
+        id: check_project_exists
+        run: echo '${{ steps.get_repository_projects.outputs.data }}' | jq -e '.[] | select(.name=="${{env.project-name}}" and .state=="open")' || echo "::set-output name=project_exists::$(echo $?)"
 
       - name: status
         run: echo '${{ steps.get_repository_projects.outputs.status }}'
+        
+      - name: status
+        run: echo '${{ steps.check_project_exists.outputs.project_exists }}'
+        
        
 #      - uses: octokit/request-action@v2.1.6
 #        id: get_latest_release
