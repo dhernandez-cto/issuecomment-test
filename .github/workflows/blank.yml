@@ -10,7 +10,9 @@ jobs:
       - uses: octokit/request-action@master
         id: get_latest_release
         with:
-          route: GET /repos/{owner}/{repo}/releases/latest
+          route: GET /repos/{param1}/{param2}/releases/latest
+          param1: belcebus
+          param2: issuecomment-test
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}      
 
