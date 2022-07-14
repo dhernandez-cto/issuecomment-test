@@ -10,7 +10,7 @@ jobs:
       project-name: "Request Action Validation"
     
     steps:
-      - name: check if project exists
+      - name: retrieve repository project list
         uses: octokit/request-action@v2.1.6
         id: get_repository_validation_request_project
         with:
@@ -19,7 +19,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
-      - run: echo '${{ steps.get_repository_validation_request_project.outputs.data }}' | jq '.[] | select(.name=="Projects Documentation") | select(.state=="open")'
+      - name: check if project already exists
+        run: echo '${{ steps.get_repository_validation_request_project.outputs.data }}' | jq '.[] | select(.name=="${{env.project-name}}") | select(.state=="open")'
        
 #      - uses: octokit/request-action@v2.1.6
 #        id: get_latest_release
