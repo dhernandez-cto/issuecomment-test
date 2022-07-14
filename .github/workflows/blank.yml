@@ -12,18 +12,19 @@ jobs:
     steps:
       - name: retrieve repository project list
         uses: octokit/request-action@v2.1.6
-        id: get_repository_validation_request_project
+        id: get_repository_projects
         with:
           route: GET /repos/{repo}/projects
           repo: ${{env.repository}}
+          conclusion: "success"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: check if project already exists
-        run: echo '${{ steps.get_repository_validation_request_project.outputs.data }}' | jq -e '.[] | select(.name=="${{env.project-name}}" and .state=="open")'
+        run: echo '${{ steps.get_repository_projects.outputs.data }}' | jq -e '.[] | select(.name=="${{env.project-name}}" and .state=="open")'
 
       - name: status
-        run: echo '${{ steps.get_repository_validation_request_project.outputs.status }}'
+        run: echo '${{ steps.get_repository_projects.outputs.status }}'
        
 #      - uses: octokit/request-action@v2.1.6
 #        id: get_latest_release
