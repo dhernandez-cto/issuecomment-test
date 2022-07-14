@@ -7,6 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       repository: "${{github.repository}}"
+      project-name: "Request Action Validation"
     
     steps:
       - name: check if project exists
@@ -18,8 +19,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
-      - run: echo '${{ steps.get_repository_validation_request_project.outputs.data }}'
-          
+      - run: echo "${{ steps.get_repository_validation_request_project.outputs.data }}" | jq .
+       
       - uses: octokit/request-action@v2.1.6
         id: get_latest_release
         with:
