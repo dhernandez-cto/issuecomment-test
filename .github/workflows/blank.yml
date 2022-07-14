@@ -20,7 +20,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: check if project already exists
-        run: echo '${{ steps.get_repository_validation_request_project.outputs.data }}' | jq '.[] | select(.name=="${{env.project-name}}") | select(.state=="open")'
+        run: echo '${{ steps.get_repository_validation_request_project.outputs.data }}' | jq '.[] | select(.name=="${{env.project-name}}" and .state=="open")'
        
 #      - uses: octokit/request-action@v2.1.6
 #        id: get_latest_release
