@@ -21,6 +21,9 @@ jobs:
       
       - name: check if project already exists
         run: echo '${{ steps.get_repository_validation_request_project.outputs.data }}' | jq '.[] | select(.name=="${{env.project-name}}" and .state=="open")'
+
+      - name: status
+        run: echo '${{ steps.get_repository_validation_request_project.outputs.status }}'
        
 #      - uses: octokit/request-action@v2.1.6
 #        id: get_latest_release
