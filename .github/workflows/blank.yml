@@ -11,8 +11,6 @@ jobs:
         id: get_latest_release
         with:
           route: GET /repos/{owner}/{repo}/releases/latest
-          owner: belcebus
-          repo: issuecomment-test
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}      
 
