@@ -19,17 +19,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
-      - run: echo '${{ steps.get_repository_validation_request_project.outputs.data }}' | jq . 
+      - run: echo '${{ steps.get_repository_validation_request_project.outputs.data }}' | jq '.[] | select(.name=="Projects Documentation") | select(.state=="open")'
        
-      - uses: octokit/request-action@v2.1.6
-        id: get_latest_release
-        with:
-          route: POST /repos/{owner}/{repo}/projects
-          owner: belcebus
-          repo: issuecomment-test
-          name: 'Projects Documentation'
-          body: 'Developer documentation project for the developer site.'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      - uses: octokit/request-action@v2.1.6
+#        id: get_latest_release
+#        with:
+#          route: POST /repos/{owner}/{repo}/projects
+#          owner: belcebus
+#          repo: issuecomment-test
+#          name: 'Projects Documentation'
+#          body: 'Developer documentation project for the developer site.'
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
-      - run: echo '${{ steps.get_latest_release.outputs.data }}'
+#      - run: echo '${{ steps.get_latest_release.outputs.data }}'
