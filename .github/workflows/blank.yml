@@ -10,9 +10,11 @@ jobs:
       - uses: octokit/request-action@v2.1.6
         id: get_latest_release
         with:
-          route: GET /repos/{param1}/{param2}/releases/latest
-          param1: belcebus
-          param2: issuecomment-test
+          route: POST /repos/{owner}/{repo}/projects
+          owner: belcebus
+          repo: issuecomment-test
+          name: 'Projects Documentation'
+          body: 'Developer documentation project for the developer site.'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
