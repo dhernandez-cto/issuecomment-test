@@ -21,14 +21,16 @@ jobs:
       
       - name: check if project already exists
         id: check_project_exists
-        run: echo '${{ steps.get_repository_projects.outputs.data }}' | jq -e '.[] | select(.name=="${{env.project-name}}" and .state=="open")' || echo "::set-output name=project_exists::$(echo $?)"
+        run: |
+               project=$(echo '${{ steps.get_repository_projects.outputs.data }}' | jq '.[] | select(.name=="${{env.project-name}}" and .state=="open")')
+               echo "::set-output name=project_exists::$( [ ${#project} = 0 ]; echo $?)"
 
-      - name: status
-        run: echo '${{ steps.get_repository_projects.outputs.status }}'
-        
-      - name: status
+#      - name: status
+#        run: echo '${{ steps.get_repository_projects.outputs.status }}'
+#        
+      - name: exists
         run: echo '${{ steps.check_project_exists.outputs.project_exists }}'
-        
+#        
        
 #      - uses: octokit/request-action@v2.1.6
 #        id: get_latest_release
