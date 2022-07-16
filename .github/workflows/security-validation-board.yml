@@ -59,4 +59,4 @@ jobs:
 
     steps:
       - name: create columns
-      - run: env
+        run: env
