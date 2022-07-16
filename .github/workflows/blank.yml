@@ -30,6 +30,7 @@ jobs:
 #        run: echo '${{ steps.get_repository_projects.outputs.status }}'
 #        
   create-project:
+    needs: check-project-existance
     if: ${{jobs.check-project-existance.output.project-exists}}==0
     runs-on: ubuntu-latest
     env:
