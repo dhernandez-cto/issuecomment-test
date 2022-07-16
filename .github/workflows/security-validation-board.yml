@@ -1,4 +1,4 @@
-name: create security validation board
+name: Create security validation project board
 on:
   workflow_dispatch:
 
