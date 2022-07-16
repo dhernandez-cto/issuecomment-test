@@ -56,5 +56,7 @@ jobs:
     name: Create project columns
     needs: create-project
     runs-on: ubuntu-latest
-    env:
-      repository: "${{github.repository}}"
+
+    steps:
+      - name: create columns
+      - run: env
