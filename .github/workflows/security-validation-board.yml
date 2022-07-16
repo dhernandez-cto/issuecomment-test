@@ -39,12 +39,15 @@ jobs:
     if: needs.check-project.outputs.project-exists == 0
     needs: check-project
     runs-on: ubuntu-latest
+    outputs:
+      project-id: ${{ steps.get-projet-id.outputs.projec-id }}
     steps:
       - name: exists
         run: echo '${{ needs.check-project.outputs.project-exists }}'
                
-      - uses: octokit/request-action@v2.1.6
-        id: get_latest_release
+      - name: create the repositoy project
+        uses: octokit/request-action@v2.1.6
+        id: create-project
         with:
           route: POST /repos/{repo}/projects
           repo: ${{env.repository}}
@@ -53,7 +56,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
      
-      - run: echo '${{ steps.get_latest_release.outputs.data }}'
+      - name: return repository project id
+        id: get-project-id
+        run: |
+              echo ::set-output name=project-id::$( echo "${{ steps.create-project.outputs.data }}"  | jq '.id')
+              echo ${{steps.get-projet-id.outputs.projec-id}}
 
   create-columns:
     name: Create project columns
@@ -62,4 +69,4 @@ jobs:
 
     steps:
       - name: create columns
-        run: env
+        run: ${{ needs.create-project.outputs.project-id }}
