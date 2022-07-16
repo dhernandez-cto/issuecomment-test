@@ -3,12 +3,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  check-project-existence:
     runs-on: ubuntu-latest
     env:
       repository: "${{github.repository}}"
       project-name: "Request Action Validation"
-    
+    output:
+      project-exists: ${{ steps.check_project_exists.outpu.project_exists }}
     steps:
       - name: retrieve repository project list
         uses: octokit/request-action@v2.1.6
@@ -28,10 +29,16 @@ jobs:
 #      - name: status
 #        run: echo '${{ steps.get_repository_projects.outputs.status }}'
 #        
+  create-project:
+    if: ${{jobs.check-project-existance.output.project-exists}}==0
+    runs-on: ubuntu-latest
+    env:
+      repository: "${{github.repository}}"
+      project-name: "Request Action Validation"
+    steps:
       - name: exists
-        run: echo '${{ steps.check_project_exists.outputs.project_exists }}'
-#        
-       
+        run: echo '${{ jobs.check-project-existance.output.project-exists }}'
+               
 #      - uses: octokit/request-action@v2.1.6
 #        id: get_latest_release
 #        with:
