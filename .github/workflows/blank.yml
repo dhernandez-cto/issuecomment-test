@@ -33,7 +33,7 @@ jobs:
 #        
   create-project:
     needs: check-if-project-exists
-    if: ${{needs.check-if-project-exists.outputs.project-exists}}==0
+    if: needs.check-if-project-exists.outputs.project-exists == 0
     runs-on: ubuntu-latest
     env:
       repository: "${{github.repository}}"
