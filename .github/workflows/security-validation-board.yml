@@ -3,55 +3,43 @@ on:
   workflow_dispatch:
 
 env:
-  project-name: "Request Action Validation"
-  repository: "${{github.repository}}"
+  PROJECT-NAME: "Request Action Validation"
+  REPOSITORY: "${{github.repository}}"
 
 jobs:
   check-project:
-    name: Check repository projects
+    name: Create repository project
     runs-on: ubuntu-latest
-    outputs:
-      project-exists: ${{ steps.check-project-exists.outputs.project-exists }}
     steps:
+
       - name: retrieve repository project list
         uses: octokit/request-action@v2.1.6
-        id: get_repository_projects
+        id: get-repository-projects
         with:
           route: GET /repos/{repo}/projects
-          repo: ${{env.repository}}
+          repo: ${{env.REPOSITORY}}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: check if project already exists
         id: check-project-exists
         run: |
-               project=$(echo '${{ steps.get_repository_projects.outputs.data }}' | jq '.[] | select(.name=="${{env.project-name}}" and .state=="open")')
+               project=$(echo '${{ steps.get-repository-projects.outputs.data }}' | jq '.[] | select(.name=="${{env.PROJECT-NAME}}" and .state=="open")')
                if [ ${#project} != 0 ];
                then
                  echo "::set-output name=project-exists::1"
-                 echo "::notice title='Project already exists'::'A project named ${{ env.project-name }} already exists'"
+                 echo "::error title='Project already exists'::'A project named ${{ env.PROJECT-NAME }} already exists'"
                fi
       - name: show result
         run: echo "${{steps.check-project-exists.outputs.project-exists}}"
-      
-  create-project:
-    name: Create validation project
-    if: needs.check-project.outputs.project-exists == 0
-    needs: check-project
-    runs-on: ubuntu-latest
-    outputs:
-      project-id: ${{ steps.get-projet-id.outputs.projec-id }}
-    steps:
-      - name: exists
-        run: echo '${{ needs.check-project.outputs.project-exists }}'
-               
+                     
       - name: create the repositoy project
         uses: octokit/request-action@v2.1.6
         id: create-project
         with:
           route: POST /repos/{repo}/projects
-          repo: ${{env.repository}}
-          name: ${{env.project-name}}
+          repo: ${{env.REPOSITORY}}
+          name: ${{env.PROJECT-NAME}}
           body: "Automatic created. Project for thir party validation process requests"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -61,14 +49,7 @@ jobs:
         run: |
               project_id=$(echo '${{ steps.create-project.outputs.data }}' | jq -e '.id')
               echo ::set-output name=project-id::${project_id}
-              echo ${project-id}
+              echo ${project_id}
  
-
-  create-columns:
-    name: Create project columns
-    needs: create-project
-    runs-on: ubuntu-latest
-
-    steps:
       - name: create columns
-        run: echo ${{ needs.create-project.outputs.project-id }}
+        run: echo ${{ steps.get-project-id.outputs.project-id }}
