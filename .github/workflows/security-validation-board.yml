@@ -13,8 +13,8 @@ jobs:
     steps:
 
       - name: retrieve repository project list
-        uses: octokit/request-action@v2.1.6
         id: get-repository-projects
+        uses: octokit/request-action@v2.1.6
         with:
           route: GET /repos/{repo}/projects
           repo: ${{env.REPOSITORY}}
@@ -24,19 +24,20 @@ jobs:
       - name: check if project already exists
         id: check-project-exists
         run: |
-               project=$(echo '${{ steps.get-repository-projects.outputs.data }}' | jq '.[] | select(.name=="${{env.PROJECT-NAME}}" and .state=="open")')
-               if [ ${#project} != 0 ];
-               then
-                 echo "::set-output name=project-exists::1"
-                 echo "::error title='Project already exists'::'A project named ${{ env.PROJECT-NAME }} already exists'"
-                 return 1
-               fi
+              project=$(echo '${{ steps.get-repository-projects.outputs.data }}' | jq '.[] | select(.name=="${{env.PROJECT-NAME}}" and .state=="open")')
+              if [ ${#project} != 0 ];
+              then
+                echo "::set-output name=project-exists::1"
+                echo "::error title='Project already exists'::'A project named ${{ env.PROJECT-NAME }} already exists'"
+                return 1
+              fi
+
       - name: show result
         run: echo "${{steps.check-project-exists.outputs.project-exists}}"
-                     
+    
       - name: create the repositoy project
-        uses: octokit/request-action@v2.1.6
         id: create-project
+        uses: octokit/request-action@v2.1.6
         with:
           route: POST /repos/{repo}/projects
           repo: ${{env.REPOSITORY}}
@@ -44,7 +45,7 @@ jobs:
           body: "Automatic created. Project for thir party validation process requests"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-     
+
       - name: return repository project id
         id: get-project-id
         run: |
