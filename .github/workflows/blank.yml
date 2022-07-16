@@ -38,7 +38,7 @@ jobs:
       project-name: "Request Action Validation"
     steps:
       - name: exists
-        run: echo '${{ jobs.check-project-existance.output.project-exists }}'
+        run: echo '${{ jobs.check-project-existance.outputs.project-exists }}'
                
 #      - uses: octokit/request-action@v2.1.6
 #        id: get_latest_release
