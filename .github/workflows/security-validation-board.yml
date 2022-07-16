@@ -59,10 +59,10 @@ jobs:
       - name: return repository project id
         id: get-project-id
         run: |
-              project_id=$(echo "${{ steps.create-project.outputs.data }}" | jq -e .id)
+              project_id=$(echo '${{ steps.create-project.outputs.data }}' | jq -e '.id')
+              echo ::set-output name=project-id::${project_id}
               echo ${project-id}
  
- #             echo ::set-output name=project-id::${project_id}
 
   create-columns:
     name: Create project columns
