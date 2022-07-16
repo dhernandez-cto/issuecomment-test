@@ -49,7 +49,7 @@ jobs:
           route: POST /repos/{repo}/projects
           repo: ${{env.repository}}
           name: ${{env.project-name}}
-          body: 'Automatic created: Project for thir party validation process requests'
+          body: "Automatic created. Project for thir party validation process requests"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
      
