@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  check-project-existence:
+  check-if-project-exists:
     runs-on: ubuntu-latest
     env:
       repository: "${{github.repository}}"
@@ -27,20 +27,20 @@ jobs:
                echo "::set-output name=project-exists::$( [ ${#project} = 0 ]; echo $?)"
 
       - name: show result
-        run: echo "${{steps.check-project-exists..outputs.project-exists}}"
+        run: echo "${{steps.check-project-exists.outputs.project-exists}}"
 #      - name: status
 #        run: echo '${{ steps.get_repository_projects.outputs.status }}'
 #        
   create-project:
-    needs: check-project-existence
-    if: ${{needs.check-project-existence.outputs.project-exists}}==0
+    needs: check-if-project-exists
+    if: ${{needs.check-if-project-exists.outputs.project-exists}}==0
     runs-on: ubuntu-latest
     env:
       repository: "${{github.repository}}"
       project-name: "Request Action Validation"
     steps:
       - name: exists
-        run: echo '${{ needs.check-project-existence.outputs.project-exists }}'
+        run: echo '${{ needs.check-if-project-exists.outputs.project-exists }}'
                
 #      - uses: octokit/request-action@v2.1.6
 #        id: get_latest_release
