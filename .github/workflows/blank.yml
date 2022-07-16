@@ -9,7 +9,7 @@ jobs:
       repository: "${{github.repository}}"
       project-name: "Request Action Validation"
     outputs:
-      project-exists: ${{ steps.check_project_exists.outpu.project_exists }}
+      project-exists: ${{ steps.check-project-exists.outpu.project-exists }}
     steps:
       - name: retrieve repository project list
         uses: octokit/request-action@v2.1.6
@@ -21,11 +21,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: check if project already exists
-        id: check_project_exists
+        id: check-project-exists
         run: |
                project=$(echo '${{ steps.get_repository_projects.outputs.data }}' | jq '.[] | select(.name=="${{env.project-name}}" and .state=="open")')
-               echo "::set-output name=project_exists::$( [ ${#project} = 0 ]; echo $?)"
+               echo "::set-output name=project-exists::$( [ ${#project} = 0 ]; echo $?)"
 
+      - name: show result
+        run: echo "${{steps.check-project-exists..outputs.project-exists}}"
 #      - name: status
 #        run: echo '${{ steps.get_repository_projects.outputs.status }}'
 #        
