@@ -36,7 +36,6 @@ jobs:
     env:
       repository: "${{github.repository}}"
       project-name: "Request Action Validation"
-      repository-exists: ${{jobs.check-project-existance.outputs.project-exists}}
     steps:
       - name: exists
         run: echo '${{ envs.repository-exists }}'
