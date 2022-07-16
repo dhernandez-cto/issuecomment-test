@@ -26,8 +26,11 @@ jobs:
         id: check-project-exists
         run: |
                project=$(echo '${{ steps.get_repository_projects.outputs.data }}' | jq '.[] | select(.name=="${{env.project-name}}" and .state=="open")')
-               echo "::set-output name=project-exists::$( [ ${#project} = 0 ]; echo $?)"
-               echo "::notice title='Project already exists'::'A project named ${{ env.project-name }} already exists'"
+               if [ ${#project} = 0 ];
+               then
+                 echo "::set-output name=project-exists::1"
+                 echo "::notice title='Project already exists'::'A project named ${{ env.project-name }} already exists'"
+               fi
       - name: show result
         run: echo "${{steps.check-project-exists.outputs.project-exists}}"
       
