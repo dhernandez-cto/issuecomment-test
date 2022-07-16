@@ -29,6 +29,7 @@ jobs:
                then
                  echo "::set-output name=project-exists::1"
                  echo "::error title='Project already exists'::'A project named ${{ env.PROJECT-NAME }} already exists'"
+                 return 1
                fi
       - name: show result
         run: echo "${{steps.check-project-exists.outputs.project-exists}}"
