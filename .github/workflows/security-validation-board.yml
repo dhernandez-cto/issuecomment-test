@@ -1,13 +1,15 @@
-name: test octokit request action
+name: create security validation board
 on:
   workflow_dispatch:
 
+env:
+  project-name: "Request Action Validation"
+  repository: "${{github.repository}}"
+
 jobs:
-  check-if-project-exists:
+  check-project:
+    name: Check repository projects
     runs-on: ubuntu-latest
-    env:
-      repository: "${{github.repository}}"
-      project-name: "Request Action Validation"
     outputs:
       project-exists: ${{ steps.check-project-exists.outputs.project-exists }}
     steps:
@@ -28,29 +30,31 @@ jobs:
                echo "::notice title='Project already exists'::'A project named ${{ env.project-name }} already exists'"
       - name: show result
         run: echo "${{steps.check-project-exists.outputs.project-exists}}"
-#      - name: status
-#        run: echo '${{ steps.get_repository_projects.outputs.status }}'
-#        
+      
   create-project:
-    needs: check-if-project-exists
-    if: needs.check-if-project-exists.outputs.project-exists == 0
+    name: Create validation project
+    if: needs.check-project.outputs.project-exists == 0
+    needs: check-project
+    runs-on: ubuntu-latest
+    steps:
+      - name: exists
+        run: echo '${{ needs.check-project.outputs.project-exists }}'
+               
+      - uses: octokit/request-action@v2.1.6
+        id: get_latest_release
+        with:
+          route: GET /repos/{repo}/projects
+          repo: ${{env.repository}}
+          name: ${{env.project-name}}
+          body: 'Developer documentation project for the developer site.'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+     
+      - run: echo '${{ steps.get_latest_release.outputs.data }}'
+
+  create-columns:
+    name: Create project columns
+    needs: create-project
     runs-on: ubuntu-latest
     env:
       repository: "${{github.repository}}"
-      project-name: "Request Action Validation"
-    steps:
-      - name: exists
-        run: echo '${{ needs.check-if-project-exists.outputs.project-exists }}'
-               
-#      - uses: octokit/request-action@v2.1.6
-#        id: get_latest_release
-#        with:
-#          route: POST /repos/{owner}/{repo}/projects
-#          owner: belcebus
-#          repo: issuecomment-test
-#          name: 'Projects Documentation'
-#          body: 'Developer documentation project for the developer site.'
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-#      - run: echo '${{ steps.get_latest_release.outputs.data }}'
