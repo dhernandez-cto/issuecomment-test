@@ -46,10 +46,10 @@ jobs:
       - uses: octokit/request-action@v2.1.6
         id: get_latest_release
         with:
-          route: GET /repos/{repo}/projects
+          route: POST /repos/{repo}/projects
           repo: ${{env.repository}}
           name: ${{env.project-name}}
-          body: 'Developer documentation project for the developer site.'
+          body: 'Automatic created: Project for thir party validation process requests'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
      
