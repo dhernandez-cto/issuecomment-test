@@ -31,14 +31,14 @@ jobs:
 #        
   create-project:
     needs: check-project-existance
-    if: ${{jobs.check-project-existance.outputs.project-exists}}==0
+    if: ${{needs.check-project-existance.outputs.project-exists}}==0
     runs-on: ubuntu-latest
     env:
       repository: "${{github.repository}}"
       project-name: "Request Action Validation"
     steps:
       - name: exists
-        run: echo '${{ envs.repository-exists }}'
+        run: echo '${{ needs.check-project-existance.outputs.project-exists }}'
                
 #      - uses: octokit/request-action@v2.1.6
 #        id: get_latest_release
