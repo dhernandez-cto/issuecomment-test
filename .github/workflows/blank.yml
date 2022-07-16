@@ -9,7 +9,7 @@ jobs:
       repository: "${{github.repository}}"
       project-name: "Request Action Validation"
     outputs:
-      project-exists: ${{ steps.check-project-exists.outpu.project-exists }}
+      project-exists: ${{ steps.check-project-exists.outputs.project-exists }}
     steps:
       - name: retrieve repository project list
         uses: octokit/request-action@v2.1.6
