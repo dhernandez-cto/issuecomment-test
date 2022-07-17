@@ -54,12 +54,43 @@ jobs:
               echo ::set-output name=project-id::${project_id}
               echo ${project_id}
  
-      - name: create columns
-        id: create-columns
+      - name: create todo column
+        id: create-todo-column
         uses: octokit/request-action@v2.1.6
         with:
           route: POST /projects/{project_id}/columns
           project_id: ${{ steps.get-project-id.outputs.project-id }}
-          name: "TODO"
+          name: "todo"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: create in progress column
+        id: create-in-progress-column
+        uses: octokit/request-action@v2.1.6
+        with:
+          route: POST /projects/{project_id}/columns
+          project_id: ${{ steps.get-project-id.outputs.project-id }}
+          name: "in-progress"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: create accepted column
+        id: create-accepted-column
+        uses: octokit/request-action@v2.1.6
+        with:
+          route: POST /projects/{project_id}/columns
+          project_id: ${{ steps.get-project-id.outputs.project-id }}
+          name: "accepted"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: create cancelled column
+        id: create-cancelled-column
+        uses: octokit/request-action@v2.1.6
+        with:
+          route: POST /projects/{project_id}/columns
+          project_id: ${{ steps.get-project-id.outputs.project-id }}
+          name: "cancelled"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
