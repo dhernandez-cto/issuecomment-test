@@ -55,4 +55,11 @@ jobs:
               echo ${project_id}
  
       - name: create columns
-        run: echo ${{ steps.get-project-id.outputs.project-id }}
+        id: create-columns
+        uses: octokit/request-action@v2.1.6
+        with:
+          route: POST /projects/{project_id}/columns
+          project_id: ${{ steps.get-project-id.outputs.project-id }}
+          name: "TODO"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
