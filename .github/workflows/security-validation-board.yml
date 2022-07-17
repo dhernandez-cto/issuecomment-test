@@ -17,15 +17,15 @@ jobs:
         uses: octokit/request-action@v2.1.6
         with:
           route: GET /repos/{repo}/projects
-          repo: ${{env.REPOSITORY}}
+          repo: ${{ env.REPOSITORY }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: check if project already exists
         id: check-project-exists
         run: |
-              project=$(echo '${{ steps.get-repository-projects.outputs.data }}' | jq '.[] | select(.name=="${{env.PROJECT-NAME}}" and .state=="open")')
-              if [ ${#project} != 0 ];
+              project=$(echo '${{ steps.get-repository-projects.outputs.data }}' | jq '.[] | select(.name=="${{ env.PROJECT-NAME }}" and .state=="open")')
+              if [ ${ #project } != 0 ];
               then
                 echo "::set-output name=project-exists::1"
                 echo "::error title='Project already exists'::'A project named ${{ env.PROJECT-NAME }} already exists'"
@@ -40,8 +40,8 @@ jobs:
         uses: octokit/request-action@v2.1.6
         with:
           route: POST /repos/{repo}/projects
-          repo: ${{env.REPOSITORY}}
-          name: ${{env.PROJECT-NAME}}
+          repo: ${{ env.REPOSITORY }}
+          name: ${{ env.PROJECT-NAME }}
           body: "Automatic created. Project for thir party validation process requests"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -50,8 +50,8 @@ jobs:
         id: get-project-id
         run: |
               project_id=$(echo '${{ steps.create-project.outputs.data }}' | jq -e '.id')
-              echo ::set-output name=project-id::${project_id}
-              echo ${project_id}
+              echo ::set-output name=project-id::${ project_id }
+              echo ${ project_id }
  
       - name: create columns
         run: echo ${{ steps.get-project-id.outputs.project-id }}
