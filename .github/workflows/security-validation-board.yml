@@ -1,0 +1,96 @@
+name: Create security validation project board
+on:
+  workflow_dispatch:
+
+env:
+  PROJECT-NAME: "Request Action Validation"
+  PROJECT-DESCRIPTION: "Automatic created. Project for thir party validation process requests"
+  REPOSITORY: "${{github.repository}}"
+
+jobs:
+  check-project:
+    name: Create repository project
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: retrieve repository project list
+        id: get-repository-projects
+        uses: octokit/request-action@v2.1.6
+        with:
+          route: GET /repos/{repo}/projects
+          repo: ${{ env.REPOSITORY }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: check if project already exists
+        id: check-project-exists
+        run: |
+              project=$(echo '${{ steps.get-repository-projects.outputs.data }}' | jq '.[] | select(.name=="${{ env.PROJECT-NAME }}" and .state=="open")')
+              if [ ${#project} != 0 ];
+              then
+                echo "::set-output name=project-exists::1"
+                echo "::error title='Project already exists'::'A project named ${{ env.PROJECT-NAME }} already exists'"
+                return 1
+              fi
+
+      - name: show result
+        run: echo "${{steps.check-project-exists.outputs.project-exists}}"
+    
+      - name: create the repositoy project
+        id: create-project
+        uses: octokit/request-action@v2.1.6
+        with:
+          route: POST /repos/{repo}/projects
+          repo: ${{ env.REPOSITORY }}
+          name: ${{ env.PROJECT-NAME }}
+          body: ${{ env.PROJECT-DESCRIPTION}}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: return repository project id
+        id: get-project-id
+        run: |
+              project_id=$(echo '${{ steps.create-project.outputs.data }}' | jq -e '.id')
+              echo ::set-output name=project-id::${project_id}
+              echo ${project_id}
+ 
+      - name: create todo column
+        id: create-todo-column
+        uses: octokit/request-action@v2.1.6
+        with:
+          route: POST /projects/{project_id}/columns
+          project_id: ${{ steps.get-project-id.outputs.project-id }}
+          name: "todo"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: create in progress column
+        id: create-in-progress-column
+        uses: octokit/request-action@v2.1.6
+        with:
+          route: POST /projects/{project_id}/columns
+          project_id: ${{ steps.get-project-id.outputs.project-id }}
+          name: "in-progress"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: create accepted column
+        id: create-accepted-column
+        uses: octokit/request-action@v2.1.6
+        with:
+          route: POST /projects/{project_id}/columns
+          project_id: ${{ steps.get-project-id.outputs.project-id }}
+          name: "accepted"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: create cancelled column
+        id: create-cancelled-column
+        uses: octokit/request-action@v2.1.6
+        with:
+          route: POST /projects/{project_id}/columns
+          project_id: ${{ steps.get-project-id.outputs.project-id }}
+          name: "cancelled"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
